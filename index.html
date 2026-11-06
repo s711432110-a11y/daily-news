@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyPulse 每日脈動 · 全方位新聞儀表板</title>
+  <meta name="description" content="自動化每日新聞精緻儀表板，涵蓋重大事件、財金、時事、股市、娛樂、會計與 ESG 負面爭議監警七大板塊。">
+  
+  <!-- 字型系統：Inter、JetBrains Mono 與 Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 圖示庫 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- 核心設計系統樣式檔 (現代典雅淺色風格) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ======================================================================
+       全域頂部導覽列 (Sticky Header)
+       ====================================================================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <!-- 品牌標識 -->
+      <a href="#" class="brand-link" onclick="setCategoryFilter('all'); return false;">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-bolt"></i>
+          <span class="pulse-dot" title="系統即時同步中"></span>
+        </div>
+        <div class="brand-text">
+          <h1>DailyPulse <span class="brand-badge">PRO v2.5</span></h1>
+          <div class="brand-subtitle">七大板塊 · 全方位每日專業新聞脈動</div>
+        </div>
+      </a>
+
+      <!-- 即時全文檢索搜尋列 -->
+      <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="搜尋全站新聞標題、來源或標籤 (例如: 諾貝爾、央行、台積電、裁罰)..."
+          autocomplete="off"
+        >
+        <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" title="清除搜尋">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 右側功能操作區 -->
+      <div class="header-actions">
+        <button id="refresh-btn" class="action-btn" onclick="simulateLiveFetch()" title="重新同步最新新聞">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>即時更新</span>
+        </button>
+
+        <button class="action-btn btn-primary" onclick="copyDailyDigestMarkdown()" title="一鍵複製今日完整 Markdown 簡報">
+          <i class="fa-solid fa-copy"></i>
+          <span>複製簡報</span>
+        </button>
+
+        <button class="action-btn icon-only" id="theme-toggle-btn" onclick="toggleTheme()" title="切換深色 / 淺色模式">
+          <i id="theme-toggle-icon" class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       副標題資訊列 (Date & Status Ribbon)
+       ====================================================================== -->
+  <aside class="status-ribbon">
+    <div class="container ribbon-inner">
+      <div class="ribbon-left">
+        <div class="date-indicator">
+          <i class="fa-regular fa-calendar-check" style="color: #2563eb;"></i>
+          <span id="header-date-text">2026 年 11 月 06 日</span>
+        </div>
+        <div class="market-pulse">
+          <span class="pulse-circle"></span>
+          <span>市場動態：七大板塊監警正常運行（已彙整 35 則重要情報）</span>
+        </div>
+        <span id="header-update-time" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">更新時間：載入中...</span>
+      </div>
+
+      <div class="ribbon-right">
+        <a href="AGENTS.md" target="_blank" class="doc-link" title="檢視 AI 開發指引規範">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>AGENTS.md 規範手冊</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================================================================
+       主體內容區 (Main Container)
+       ====================================================================== -->
+  <main class="container">
+    
+    <!-- 1. 今日頭條焦點卡片 (Hero Editorial Highlight) -->
+    <section class="hero-section" id="hero-section-container">
+      <!-- 由 js/app.js 動態渲染 -->
+    </section>
+
+    <!-- 2. 七大分類膠囊導覽條 (Category Navigation Pills) -->
+    <nav class="category-nav-section">
+      <div class="category-nav-bar" id="category-nav-bar">
+        <!-- 由 js/app.js 動態渲染 (重大事件、財金、時事、股市、娛樂、會計、ESG負面新聞) -->
+      </div>
+    </nav>
+
+    <!-- 3. ESG 負面爭議與法規裁罰雷達監測看板 -->
+    <section id="esg-radar-container">
+      <!-- 由 js/app.js 動態渲染 -->
+    </section>
+
+    <!-- 4. 七大分類新聞展示網格 (The 7 News Grids，每類至少 5 則) -->
+    <div id="news-sections-container">
+      <!-- 由 js/app.js 動態渲染 -->
+    </div>
+
+  </main>
+
+  <!-- ======================================================================
+       深度摘要閱讀彈窗 (Article Detail & AI Digest Modal)
+       ====================================================================== -->
+  <div class="modal-overlay" id="article-modal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeArticleModal()" aria-label="關閉視窗">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="modal-dynamic-content">
+        <!-- 點擊卡片時由 js/app.js 動態填入 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       全域吐司通知容器 (Toast Container)
+       ====================================================================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ======================================================================
+       頁尾 (Site Footer)
+       ====================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h4>DailyPulse 每日脈動</h4>
+          <p>專為現代專業工作者打造的跨領域精緻新聞情報儀表板。全站遵循嚴格的 <code>AGENTS.md</code> 資料合約與設計規範，純靜態免安裝編譯，開箱即用完美支援 GitHub Pages 免費發布託管。</p>
+        </div>
+        <div class="footer-links">
+          <h5>七大板塊快捷導覽</h5>
+          <ul>
+            <li><a href="#section-major_events" onclick="setCategoryFilter('major_events')">🚨 重大事件 (Major Events)</a></li>
+            <li><a href="#section-finance" onclick="setCategoryFilter('finance')">📊 財金焦點 (Finance)</a></li>
+            <li><a href="#section-current_events" onclick="setCategoryFilter('current_events')">📰 時事要聞 (Current Events)</a></li>
+            <li><a href="#section-stock_market" onclick="setCategoryFilter('stock_market')">📈 股市觀測 (Stock Market)</a></li>
+            <li><a href="#section-entertainment" onclick="setCategoryFilter('entertainment')">🎭 娛樂生活 (Entertainment)</a></li>
+            <li><a href="#section-accounting" onclick="setCategoryFilter('accounting')">📑 會計與審計 (Accounting)</a></li>
+            <li><a href="#section-esg_risk" onclick="setCategoryFilter('esg_risk')">⚠️ ESG 負面新聞 (ESG Risk)</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h5>開發與規範文件</h5>
+          <ul>
+            <li><a href="AGENTS.md"><i class="fa-solid fa-file-lines"></i> AGENTS.md (專案最高憲法)</a></li>
+            <li><a href="CLAUDE.md"><i class="fa-solid fa-file-code"></i> CLAUDE.md (Claude 指引)</a></li>
+            <li><a href="README.md"><i class="fa-solid fa-circle-info"></i> README.md (部署與上傳手冊)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 DailyPulse Dashboard · 依據 AGENTS.md 開發規範架構設計</div>
+        <div>
+          <span style="color: #059669;">●</span> 支援 GitHub Pages 靜態即時發布
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 核心邏輯腳本 -->
+  <script src="js/app.js"></script>
+</body>
+</html>
